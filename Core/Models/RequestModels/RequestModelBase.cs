@@ -40,7 +40,7 @@ namespace DDnsSharp.Core.Models
             {
                 if (p.CanRead)
                 {
-                    object value = p.GetValue(this);
+                    object value = p.GetValue(this,null);
                     if(value==null)
                         continue;
                     var attrs = p.GetCustomAttributes(typeof(RequestModelAliasAttribute), false);
