@@ -20,29 +20,17 @@ namespace DDnsSharp.Core
                 throw new ArgumentNullException();
 
 
-            string currentIP = CommonService.EMPTY_IP;
-            try
-            {
-                currentIP = await CommonService.GetCurrentIP();
-            }
-            catch (WebException)
-            {
-                logger.Info("无法连接至服务器.");
-                return currentIP;
-            }
+            string currentIP = await CommonService.GetCurrentIP();
 
             if (currentIP == CommonService.EMPTY_IP)
-            {
-                logger.Info("无法获取正确IP.");
                 return currentIP;
-            }
 
             foreach (var um in updateModels)
             {
                 if (!um.Enabled)
                     continue;
 
-                if (!forceUpdate&&currentIP == um.LastUpdateIP)
+                if (!forceUpdate && currentIP == um.LastUpdateIP)
                     continue;
 
                 if (String.IsNullOrEmpty(um.DomainName) || String.IsNullOrEmpty(um.SubDomain))
@@ -68,7 +56,7 @@ namespace DDnsSharp.Core
                     }
                     catch (WebException)
                     {
-                        logger.Info("无法连接至服务器");
+                        logger.Info("无法连接至dnspod服务器");
                         return currentIP;
                     }
                 }
@@ -88,7 +76,7 @@ namespace DDnsSharp.Core
                     }
                     catch (WebException)
                     {
-                        logger.Info("无法连接至服务器");
+                        logger.Info("无法连接至dnspod服务器");
                         return currentIP;
                     }
                 }
@@ -111,7 +99,7 @@ namespace DDnsSharp.Core
                 }
                 catch (WebException)
                 {
-                    logger.Info("无法连接至服务器");
+                    logger.Info("无法连接至dnspod服务器");
                     return currentIP;
                 }
                 um.LastUpdatedTime = DateTime.UtcNow;

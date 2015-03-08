@@ -7,3 +7,4 @@ packages.config
 *.user
 /Console
 /Releases
+.vs

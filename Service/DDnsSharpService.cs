@@ -17,6 +17,8 @@ namespace DDnsSharp.Service
 {
     partial class DDnsSharpService : ServiceBase
     {
+        private const int REGULAR_INTERVAL = 18000;
+        private const int ERROR_INTERVAL = 300000;
         public DDnsSharpService()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -33,7 +35,7 @@ namespace DDnsSharp.Service
         {
             logger = LogManager.GetCurrentClassLogger();
 
-            timer = new Timer(30000);
+            timer = new Timer(REGULAR_INTERVAL);
             timer.Elapsed += timer_Elapsed;
             timer.Start();
 
@@ -62,13 +64,13 @@ namespace DDnsSharp.Service
                 DDnsSharpRuntime.LoadAppConfig();
                 await DDNS.Start(DDnsSharpRuntime.AppConfig.UpdateList);
                 DDnsSharpRuntime.SaveAppConfig();
-                if (timer.Interval > 30000)
-                    timer.Interval = 30000;
+                if (timer.Interval > REGULAR_INTERVAL)
+                    timer.Interval = REGULAR_INTERVAL;
             }
             catch (Exception ex)
             {
                 logger.ErrorException("更新记录时出现意外错误", ex);
-                timer.Interval = 300000;
+                timer.Interval = ERROR_INTERVAL;
             }
         }
     }

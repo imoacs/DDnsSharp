@@ -95,7 +95,6 @@ namespace DDnsSharp.Core.Services
                     nc.Password = Encryption.Encrypt(conf.Password);
                     nc.UpdateList = conf.UpdateList;
                     var confStr = JsonConvert.SerializeObject(nc);
-                    var bytes = Encoding.UTF8.GetBytes(confStr);
                     sw.Write(confStr);
                 }
                 fs.Close();

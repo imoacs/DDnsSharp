@@ -17,14 +17,14 @@ namespace DDnsSharp.Core.Services
             return String.Format(Consts.API_FORMAT_STRING, Consts.API_BASE_URL, serviceName, methodName);
         }
 
-        public async static Task<string> AccessAPI(string url,string method="GET", string requestData = null)
+        public async static Task<string> AccessAPI(string url, string method = "GET", string requestData = null)
         {
             var req = HttpWebRequest.Create(url);
             if (req == null)
                 throw new ArgumentException("invalid url");
 
             req.Method = method;
-            if (requestData!=null)
+            if (requestData != null)
             {
                 using (var reqStream = await req.GetRequestStreamAsync())
                 {
@@ -34,15 +34,22 @@ namespace DDnsSharp.Core.Services
                 }
             }
 
-            var res = await req.GetResponseAsync();
-
-            using (var ResStream = res.GetResponseStream())
+            try
             {
-                using (var sr = new StreamReader(ResStream))
+                var res = await req.GetResponseAsync();
+
+                using (var ResStream = res.GetResponseStream())
                 {
-                    var data = await sr.ReadToEndAsync();
-                    return data;
+                    using (var sr = new StreamReader(ResStream))
+                    {
+                        var data = await sr.ReadToEndAsync();
+                        return data;
+                    }
                 }
+            }
+            catch (WebException)
+            {
+                return "";
             }
         }
 
@@ -53,14 +60,14 @@ namespace DDnsSharp.Core.Services
             return await AccessAPI<T>(url, requestModel);
         }
 
-        public async static Task<T> AccessAPI<T>(string url,RequestModelBase requestModel)
-            where T:ReturnValueBase
+        public async static Task<T> AccessAPI<T>(string url, RequestModelBase requestModel)
+            where T : ReturnValueBase
         {
             var req = HttpWebRequest.Create(url);
             if (req == null)
                 throw new ArgumentException("invalid url");
 
-            req.Method="POST";
+            req.Method = "POST";
             req.ContentType = "application/x-www-form-urlencoded;charset=utf-8";
             req.Headers["UserAgent"] = "snake-ddnspod/0.1.0 (tff.assist@gmail.com)";
 
@@ -71,15 +78,22 @@ namespace DDnsSharp.Core.Services
                 await reqStream.WriteAsync(bytes, 0, bytes.Length);
             }
 
-            var res = await req.GetResponseAsync();
-            
-            using (var ResStream = res.GetResponseStream())
+            try
             {
-                using (var sr = new StreamReader(ResStream))
+                var res = await req.GetResponseAsync();
+
+                using (var ResStream = res.GetResponseStream())
                 {
-                    var data = await sr.ReadToEndAsync();
-                    return await JsonConvert.DeserializeObjectAsync<T>(data);
+                    using (var sr = new StreamReader(ResStream))
+                    {
+                        var data = await sr.ReadToEndAsync();
+                        return JsonConvert.DeserializeObject<T>(data);
+                    }
                 }
+            }
+            catch(WebException)
+            {
+                return default(T);
             }
         }
     }
