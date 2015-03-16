@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DDnsSharp.Monitor.NinjectModules
 {
-    class RuntimeNinjectModule:NinjectModule
+    public class RuntimeNinjectModule:NinjectModule
     {
         public override void Load()
         {

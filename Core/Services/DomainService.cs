@@ -17,7 +17,7 @@ namespace DDnsSharp.Core.Services
             var requestModel = DDnsSharpRuntime.NewRequestModel <DomainListRequestModel>();
             requestModel.Type = domainType;
             requestModel.GroupID = groupID;
-            return await ServiceHelper.AccessAPI<DomainListRetrunValue>(SERVICE_NAME, "List", requestModel);
+            return await ServiceHelper.Current.AccessAPI<DomainListRetrunValue>(SERVICE_NAME, "List", requestModel);
         }
 
         public static async Task<DomainInfoReturnValue> GetInfo(int domainID)
@@ -25,21 +25,21 @@ namespace DDnsSharp.Core.Services
             var requestModel = DDnsSharpRuntime.NewRequestModel<DomainInfoRequestModel>();
             requestModel.DomainID = domainID;
 
-            return await ServiceHelper.AccessAPI<DomainInfoReturnValue>(SERVICE_NAME, "Info", requestModel);
+            return await ServiceHelper.Current.AccessAPI<DomainInfoReturnValue>(SERVICE_NAME, "Info", requestModel);
         }
 
         public static async Task<DomainInfoReturnValue> GetInfo(string domainName)
         {
             var requestModel = DDnsSharpRuntime.NewRequestModel<DomainInfoRequestModel>();
             requestModel.DomainName = domainName;
-            return await ServiceHelper.AccessAPI<DomainInfoReturnValue>(SERVICE_NAME, "Info", requestModel);
+            return await ServiceHelper.Current.AccessAPI<DomainInfoReturnValue>(SERVICE_NAME, "Info", requestModel);
         }
 
         public static async Task<DomainLogReturnValue> GetLog(int domainID)
         {
             var requestModel = DDnsSharpRuntime.NewRequestModel<DomainInfoRequestModel>();
             requestModel.DomainID = domainID;
-            return await ServiceHelper.AccessAPI<DomainLogReturnValue>(SERVICE_NAME, "Log", requestModel);
+            return await ServiceHelper.Current.AccessAPI<DomainLogReturnValue>(SERVICE_NAME, "Log", requestModel);
         }
     }
 }

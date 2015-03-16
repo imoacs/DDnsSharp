@@ -20,15 +20,15 @@ namespace DDnsSharp.Core.Services
         public static async Task<ReturnValueBase> GetAPIVersion()
         {
             var requestModel = DDnsSharpRuntime.NewRequestModel<RequestModelBase>();
-            var url = ServiceHelper.BuildAPIUrl("Info", "Version");
-            return await ServiceHelper.AccessAPI<ReturnValueBase>(url, requestModel);
+            var url = ServiceHelper.Current.BuildAPIUrl("Info", "Version");
+            return await ServiceHelper.Current.AccessAPI<ReturnValueBase>(url, requestModel);
         }
 
         public static async Task<UserInfoReturnValue> GetUserInfo()
         {
             var requestModel = DDnsSharpRuntime.NewRequestModel<RequestModelBase>();
-            var url = ServiceHelper.BuildAPIUrl("User", "Detail");
-            return await ServiceHelper.AccessAPI<UserInfoReturnValue>(url, requestModel);
+            var url = ServiceHelper.Current.BuildAPIUrl("User", "Detail");
+            return await ServiceHelper.Current.AccessAPI<UserInfoReturnValue>(url, requestModel);
         }
 
         private static IIPService[] ipServices;

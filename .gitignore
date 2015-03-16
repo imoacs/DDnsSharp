@@ -6,3 +6,5 @@ packages/
 *.user
 /Releases
 .vs
+*.vsp
+*.psess

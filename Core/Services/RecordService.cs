@@ -18,7 +18,7 @@ namespace DDnsSharp.Core.Services
             model.RecordID = recordID;
             model.SubDomain = subDomain;
             model.LineName = line;
-            return await ServiceHelper.AccessAPI<RecordChangedReturnValue>(SERVICE_NAME, "Ddns", model);
+            return await ServiceHelper.Current.AccessAPI<RecordChangedReturnValue>(SERVICE_NAME, "Ddns", model);
         }
 
         public static async Task<RecordListReturnValue> GetList(int domainID, string subDomain = null)
@@ -26,7 +26,7 @@ namespace DDnsSharp.Core.Services
             var m = DDnsSharpRuntime.NewRequestModel<RecordListRequestModel>();
             m.DomainID = domainID;
             m.SubDomain = subDomain;
-            return await ServiceHelper.AccessAPI<RecordListReturnValue>(SERVICE_NAME, "List", m);
+            return await ServiceHelper.Current.AccessAPI<RecordListReturnValue>(SERVICE_NAME, "List", m);
         }
 
         public static async Task<RecordChangedReturnValue> CreateRecord(int domainID, string subDomain, string recordType,
@@ -42,7 +42,7 @@ namespace DDnsSharp.Core.Services
             m.Value = value;
             m.MX = mx;
             m.TTL = ttl;
-            return await ServiceHelper.AccessAPI<RecordChangedReturnValue>(SERVICE_NAME, "Create", m);
+            return await ServiceHelper.Current.AccessAPI<RecordChangedReturnValue>(SERVICE_NAME, "Create", m);
         }
     }
 }

@@ -57,6 +57,7 @@
     <Compile Include="Consts.cs" />
     <Compile Include="DDNS.cs" />
     <Compile Include="APIException.cs" />
+    <Compile Include="DDnsSharpIoC.cs" />
     <Compile Include="Models\AppConfig.cs" />
     <Compile Include="Models\RecordChangedModel.cs" />
     <Compile Include="Models\RequestModels\CreateRecordRequestModel.cs" />

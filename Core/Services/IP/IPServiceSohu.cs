@@ -16,7 +16,7 @@ namespace DDnsSharp.Core.Services.IP
 
         public virtual async Task<string> GetIP()
         {
-            var content = await ServiceHelper.AccessAPI(ServiceUrl);
+            var content = await ServiceHelper.Current.AccessAPI(ServiceUrl);
             var match = Regex.Match(content, CommonService.IP_REGEX_PATTERN);
             if (match.Success)
                 return match.Value;

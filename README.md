@@ -28,9 +28,9 @@ DDnsSharp是一个基于dnspod服务,面向个人易用的 Windows 7+ 平台下�
 
 3. 服务和管理软件分开运行,每次开机就不用见到烦人的系统托盘图标了..
 
-4. 30秒更新一次,相当于IP一换,立马就同步,某壳免费的三分钟一同步弱爆了!
+4. ~~30秒更新一次,相当于IP一换,立马就同步,某壳免费的三分钟一同步弱爆了!~~因为IP获取源的原因现在已经妥协至保守时间3分钟请求一次.
 
-5. DDnsSharp自己在这大半年的时间都一直在用.稳定性没有问题.
+5. ~~DDnsSharp自己在这大半年的时间都一直在用.稳定性没有问题.~~问题还是有点的,不过正在解决..
 
 ## DDnsSharp的劣势
 
@@ -43,7 +43,7 @@ DDnsSharp是一个基于dnspod服务,面向个人易用的 Windows 7+ 平台下�
 建议使用[Nuget](http://nuget.org/)来管理这些库.
 
  - [Json.NET (4.5.1+)](http://json.codeplex.com/)
- - [MVVM Light Toolkit (4.1.26+)](http://mvvmlight.codeplex.com/)
+ - [MVVM Light Toolkit (4.1.26)](http://mvvmlight.codeplex.com/)
  - [Ninject (3.0+)](https://github.com/ninject/ninject)
  - [Nlog (2.0+)](http://nlog-project.org/)
 

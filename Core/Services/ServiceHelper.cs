@@ -7,17 +7,39 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Ninject;
 
 namespace DDnsSharp.Core.Services
 {
-    public class ServiceHelper
+    public interface IServiceHelper
     {
-        public static string BuildAPIUrl(string serviceName, string methodName)
+        string BuildAPIUrl(string serviceName, string methodName);
+        Task<string> AccessAPI(string url, string method = "GET", string requestData = null);
+        Task<T> AccessAPI<T>(string serviceName, string methodName, RequestModelBase requestModel)
+            where T : ReturnValueBase;
+        Task<T> AccessAPI<T>(string url, RequestModelBase requestModel)
+            where T : ReturnValueBase;
+    }
+
+    public class ServiceHelper : IServiceHelper
+    {
+        private static IServiceHelper current;
+        public static IServiceHelper Current
+        {
+            get
+            {
+                if (current == null)
+                    current = DDnsSharpIoC.Current.Get<IServiceHelper>();
+                return current;
+            }
+        }
+
+        public string BuildAPIUrl(string serviceName, string methodName)
         {
             return String.Format(Consts.API_FORMAT_STRING, Consts.API_BASE_URL, serviceName, methodName);
         }
 
-        public async static Task<string> AccessAPI(string url, string method = "GET", string requestData = null)
+        public async Task<string> AccessAPI(string url, string method = "GET", string requestData = null)
         {
             var req = HttpWebRequest.Create(url);
             if (req == null)
@@ -53,14 +75,14 @@ namespace DDnsSharp.Core.Services
             }
         }
 
-        public async static Task<T> AccessAPI<T>(string serviceName, string methodName, RequestModelBase requestModel)
+        public async Task<T> AccessAPI<T>(string serviceName, string methodName, RequestModelBase requestModel)
             where T : ReturnValueBase
         {
             var url = BuildAPIUrl(serviceName, methodName);
             return await AccessAPI<T>(url, requestModel);
         }
 
-        public async static Task<T> AccessAPI<T>(string url, RequestModelBase requestModel)
+        public async Task<T> AccessAPI<T>(string url, RequestModelBase requestModel)
             where T : ReturnValueBase
         {
             var req = HttpWebRequest.Create(url);
@@ -91,7 +113,7 @@ namespace DDnsSharp.Core.Services
                     }
                 }
             }
-            catch(WebException)
+            catch (WebException)
             {
                 return default(T);
             }
