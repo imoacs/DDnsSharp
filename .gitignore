@@ -2,9 +2,7 @@
 bin/
 obj/
 packages/
-packages.config
 *.suo
 *.user
-/Console
 /Releases
 .vs
