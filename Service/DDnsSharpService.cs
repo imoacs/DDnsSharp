@@ -35,6 +35,8 @@ namespace DDnsSharp.Service
         {
             logger = LogManager.GetCurrentClassLogger();
 
+            DDnsSharpRuntime.MakeBackup();
+
             timer = new Timer(REGULAR_INTERVAL);
             timer.Elapsed += timer_Elapsed;
             timer.Start();

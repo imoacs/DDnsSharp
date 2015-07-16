@@ -14,6 +14,11 @@ namespace DDnsSharp.Core
         private static AppConfigService cfgSvc = new AppConfigService();
         public static AppConfig AppConfig { get; private set; }
 
+        public static void MakeBackup()
+        {
+            cfgSvc.MakeBackup();
+        }
+
         public static void LoadAppConfig()
         {
             AppConfig = cfgSvc.Read();

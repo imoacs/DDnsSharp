@@ -31,6 +31,7 @@ namespace DDnsSharp.Monitor.Views
         {
             mconfig = MonitorIoc.Current.Get<MonitorConfig>();
             ViewModelLocator.Setup();
+            DDnsSharpRuntime.MakeBackup();
             DDnsSharpRuntime.LoadAppConfig();
             var config = DDnsSharpRuntime.AppConfig;
             if (String.IsNullOrWhiteSpace(config.Email) ||

@@ -32,43 +32,53 @@ namespace DDnsSharp.Core.Services
 
         private Mutex syncMutex;
 
+        public void MakeBackup()
+        {
+            var dir = AppDomain.CurrentDomain.BaseDirectory;
+            var fullPath = Path.Combine(dir, FILE_NAME);
+            if(File.Exists(fullPath))
+            {
+                var str = File.ReadAllText(fullPath);
+                if(!string.IsNullOrEmpty(str))
+                {
+                    File.Copy(fullPath, Path.Combine(dir, "config.bak"), true);
+                }
+            }
+        }
+
         public AppConfig Read()
         {
             var dir = AppDomain.CurrentDomain.BaseDirectory;
             var fullPath = Path.Combine(dir,FILE_NAME);
             AppConfig result = null;
-            try
+            string fileContent = null;
+            syncMutex.WaitOne();
+            if (File.Exists(fullPath))
             {
-                syncMutex.WaitOne();
-                FileStream fs;
-                if (File.Exists(fullPath))
+                try
                 {
-                    fs = File.Open(fullPath, FileMode.Open);
+                    using (var fs = File.OpenRead(fullPath))
+                    using (var sr = new StreamReader(fs))
+                    {
+                        fileContent = sr.ReadToEnd();
+                    }
+
                 }
-                else
+                catch (IOException ex)
                 {
-                    fs = File.Create(fullPath);
+                    logger.ErrorException("AppConfigService.IOException", ex);
                 }
-                using (var sr = new StreamReader(fs))
-                {
-                    result = JsonConvert.DeserializeObject<AppConfig>(sr.ReadToEnd());
-                    if (result == null)
-                        result = new AppConfig();
-                    else
-                        result.Password = Encryption.Decrypt(result.Password);
-                }
-                fs.Close();
             }
-            catch (IOException ex)
+            if(!string.IsNullOrEmpty(fileContent))
             {
-                logger.ErrorException("AppConfigService.IOException", ex);
+                result = JsonConvert.DeserializeObject<AppConfig>(fileContent);
+                result.Password = Encryption.Decrypt(result.Password);
             }
-            finally
+            else
             {
-                if (result == null)
-                    result = new AppConfig();
-                syncMutex.ReleaseMutex();
+                result = new AppConfig();
             }
+            syncMutex.ReleaseMutex();
             return result;
         }
 
@@ -76,10 +86,14 @@ namespace DDnsSharp.Core.Services
         {
             var dir = AppDomain.CurrentDomain.BaseDirectory;
             var fullPath = Path.Combine(dir, FILE_NAME);
+            var nc = new AppConfig();
+            nc.Email = conf.Email;
+            nc.Password = Encryption.Encrypt(conf.Password);
+            nc.UpdateList = conf.UpdateList;
+            syncMutex.WaitOne();
+            FileStream fs = null;
             try
             {
-                syncMutex.WaitOne();
-                FileStream fs;
                 if (File.Exists(fullPath))
                 {
                     fs = File.Open(fullPath, FileMode.Truncate);
@@ -88,25 +102,22 @@ namespace DDnsSharp.Core.Services
                 {
                     fs = File.Create(fullPath);
                 }
-                using (var sw = new StreamWriter(fs))
-                {
-                    var nc = new AppConfig();
-                    nc.Email = conf.Email;
-                    nc.Password = Encryption.Encrypt(conf.Password);
-                    nc.UpdateList = conf.UpdateList;
-                    var confStr = JsonConvert.SerializeObject(nc);
-                    sw.Write(confStr);
-                }
                 fs.Close();
             }
             catch (IOException ex)
             {
                 logger.ErrorException("AppConfigService.IOException", ex);
             }
-            finally
+            if(fs!=null)
             {
-                syncMutex.ReleaseMutex();
+                using (var sw = new StreamWriter(fs))
+                {
+                    var confStr = JsonConvert.SerializeObject(nc);
+                    sw.Write(confStr);
+                }
+                fs.Close();
             }
+            syncMutex.ReleaseMutex();
         }
     }
 }
